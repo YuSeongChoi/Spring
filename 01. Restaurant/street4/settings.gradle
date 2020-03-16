@@ -1,0 +1,3 @@
+rootProject.name = 'street4'
+
+include 'street4-api'
