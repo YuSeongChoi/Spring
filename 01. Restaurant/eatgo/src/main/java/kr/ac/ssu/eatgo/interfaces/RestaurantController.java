@@ -1,5 +1,6 @@
 package kr.ac.ssu.eatgo.interfaces;
 
+import kr.ac.ssu.eatgo.application.RestaurantService;
 import kr.ac.ssu.eatgo.domain.MenuItem;
 import kr.ac.ssu.eatgo.domain.MenuItemRepository;
 import kr.ac.ssu.eatgo.domain.Restaurant;
@@ -14,23 +15,24 @@ import java.util.List;
 @RestController //Spring이 직접 관리
 public class RestaurantController {
 
-    @Autowired //Spring IoC 자동연결
-    private RestaurantRepository restaurantRepository;
     @Autowired
-    private MenuItemRepository menuItemRepository;
+    private RestaurantService restaurantService;
 
     @GetMapping("/restaurants")
     public List<Restaurant> list() {
-        List<Restaurant> restaurants = restaurantRepository.findAll();
+        List<Restaurant> restaurants = restaurantService.getRestaurants();
         return restaurants;
     }
 
     @GetMapping("/restaurants/{id}")
     public Restaurant detail(@PathVariable("id") Long id) {
-        Restaurant restaurant = restaurantRepository.findById(id);
+        Restaurant restaurant = restaurantService.getRestaurant(id);
+        // 기본 정보 + 메뉴 정보
 
-        List<MenuItem> menuItems = menuItemRepository.findAllByRestaurantId(id);
-        restaurant.setMenuItems(menuItems);
+//        Restaurant restaurant = restaurantRepository.findById(id);
+//
+//        List<MenuItem> menuItems = menuItemRepository.findAllByRestaurantId(id);
+//        restaurant.setMenuItems(menuItems);
 
         return restaurant;
     }

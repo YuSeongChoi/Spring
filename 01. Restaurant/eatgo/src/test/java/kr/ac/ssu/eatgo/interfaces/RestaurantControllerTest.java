@@ -1,5 +1,6 @@
 package kr.ac.ssu.eatgo.interfaces;
 
+import kr.ac.ssu.eatgo.application.RestaurantService;
 import kr.ac.ssu.eatgo.domain.MenuItemRepository;
 import kr.ac.ssu.eatgo.domain.MenuItemRepositoryImpl;
 import kr.ac.ssu.eatgo.domain.RestaurantRepository;
@@ -27,6 +28,9 @@ class RestaurantControllerTest {
 
     @SpyBean(MenuItemRepositoryImpl.class)
     private MenuItemRepository menuItemRepository;
+
+    @SpyBean(RestaurantService.class)
+    private RestaurantService restaurantService;
 
     @Test
     public void list() {
