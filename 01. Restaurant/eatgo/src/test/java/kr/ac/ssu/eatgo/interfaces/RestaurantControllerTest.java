@@ -1,13 +1,12 @@
 package kr.ac.ssu.eatgo.interfaces;
 
-import kr.ac.ssu.eatgo.domain.Restaurant;
+import kr.ac.ssu.eatgo.domain.RestaurantRepository;
+import kr.ac.ssu.eatgo.domain.RestaurantRepositoryImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.hamcrest.core.StringContains.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -20,6 +19,9 @@ class RestaurantControllerTest {
 
     @Autowired
     private MockMvc mvc; 
+
+    @SpyBean(RestaurantRepositoryImpl.class)
+    private RestaurantRepository restaurantRepository;
 
     @Test
     public void list() {

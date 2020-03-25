@@ -2,18 +2,19 @@ package kr.ac.ssu.eatgo.interfaces;
 
 import kr.ac.ssu.eatgo.domain.Restaurant;
 import kr.ac.ssu.eatgo.domain.RestaurantRepository;
-import org.apache.catalina.util.ErrorPageSupport;
+import kr.ac.ssu.eatgo.domain.RestaurantRepositoryImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@RestController
+@RestController //Spring이 직접 관리
 public class RestaurantController {
 
-    private RestaurantRepository repository = new RestaurantRepository();
+    @Autowired //Spring IoC 자동연결
+    private RestaurantRepository repository;
 
     @GetMapping("/restaurants")
     public List<Restaurant> list() {
