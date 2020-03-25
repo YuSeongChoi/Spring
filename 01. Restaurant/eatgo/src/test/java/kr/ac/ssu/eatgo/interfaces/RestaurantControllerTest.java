@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class RestaurantControllerTest {
 
     @Autowired
-    private MockMvc mvc;
+    private MockMvc mvc; 
 
     @Test
     public void list() {
@@ -29,6 +29,31 @@ class RestaurantControllerTest {
                             containsString("\"name\":\"Bob zip\"")
                     ));
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void detail() {
+        try {
+            mvc.perform(get("restaurants/1004"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().string(
+                            containsString("\"id\":1004")
+                    ))
+                    .andExpect(content().string(
+                            containsString("\"name\":\"Bob zip\"")
+                    ));
+
+            mvc.perform(get("restaurants/2020"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().string(
+                            containsString("\"id\":2020")
+                    ))
+                    .andExpect(content().string(
+                            containsString("\"name\":\"Bob zip\"")
+                    ));
         } catch (Exception e) {
             e.printStackTrace();
         }
