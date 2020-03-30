@@ -6,10 +6,11 @@ import kr.ac.ssu.eatgo.domain.MenuItemRepository;
 import kr.ac.ssu.eatgo.domain.Restaurant;
 import kr.ac.ssu.eatgo.domain.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController //Spring이 직접 관리
@@ -35,6 +36,23 @@ public class RestaurantController {
 //        restaurant.setMenuItems(menuItems);
 
         return restaurant;
+    }
+
+    @PostMapping("/restaurants")
+    public ResponseEntity<?> create(@RequestBody Restaurant resource) {
+        String name = resource.getName();
+        String address = resource.getAddress();
+
+        Restaurant restaurant = new Restaurant(1234L,name,address);
+        restaurantService.addRestaurant(restaurant);
+
+        URI location = null;
+        try {
+            location = new URI("/restaurants/" +restaurant.getId());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.created(location).body("{}");
     }
 
 }
