@@ -35,7 +35,12 @@ class RestaurantControllerTest {
         try {
             //즉, 실제의 값을 관리하는것이 아니라 restaurantService를 사용하는지에 대한 TEST만 한다.
             List<Restaurant> restaurants = new ArrayList<>();
-            restaurants.add(new Restaurant(1004L, "JOKER House", "Seoul"));
+//            restaurants.add(new Restaurant(1004L, "JOKER House", "Seoul"));
+            Restaurant restaurant = Restaurant.builder()
+                    .id(1004L)
+                    .name("JOKER House")
+                    .address("Seoul")
+                    .build();
             given(restaurantService.getRestaurants()).willReturn(restaurants);
 
             mvc.perform(get("http://localhost:8080/restaurants"))
@@ -55,10 +60,20 @@ class RestaurantControllerTest {
     @Test
     public void detail() {
         try {
-            Restaurant restaurant1 = new Restaurant(1004L, "JOKER House", "Seoul");
+//            Restaurant restaurant1 = new Restaurant(1004L, "JOKER House", "Seoul");
+            Restaurant restaurant1 = Restaurant.builder()
+                    .id(1004L)
+                    .name("JOKER House")
+                    .address("Seoul")
+                    .build();
             restaurant1.addMenuItem(new MenuItem("Kimchi"));
 
-            Restaurant restaurant2 = new Restaurant(2020L, "Cyber Food", "Seoul");
+//            Restaurant restaurant2 = new Restaurant(2020L, "Cyber Food", "Seoul");
+            Restaurant restaurant2 = Restaurant.builder()
+                    .id(2020L)
+                    .name("Cyber Food")
+                    .address("Seoul")
+                    .build();
 
             given(restaurantService.getRestaurant(1004L)).willReturn(restaurant1);
             given(restaurantService.getRestaurant(2020L)).willReturn(restaurant2);
@@ -92,11 +107,11 @@ class RestaurantControllerTest {
     @Test
     public void create() {
         try {
-            mvc.perform(post("/restaurants/")
+            mvc.perform(post("restaurants/")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content("{\"name\":\"Beryong\",\"address\":\"Busan\"}"))
                     .andExpect(status().isCreated())
-                    .andExpect(header().string("location","/restaurants/1234"))
+                    .andExpect(header().string("location","1234"))
                     .andExpect(content().string("{}"));
 
             verify(restaurantService).addRestaurant(any());
