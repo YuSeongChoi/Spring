@@ -17,8 +17,7 @@ import static org.hamcrest.core.StringContains.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -93,7 +92,7 @@ class RestaurantControllerTest {
     @Test
     public void create() {
         try {
-            mvc.perform(post("/restaurants")
+            mvc.perform(post("/restaurants/")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content("{\"name\":\"Beryong\",\"address\":\"Busan\"}"))
                     .andExpect(status().isCreated())
@@ -102,6 +101,20 @@ class RestaurantControllerTest {
 
             verify(restaurantService).addRestaurant(any());
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void update() {
+        try {
+            mvc.perform(patch("/restaurants/1004")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{\"name\":\"JOKER Bar\",\"address\":\"Busan\"}"))
+                    .andExpect(status().isOk());
+
+            verify(restaurantService).updateRestaurant(1004L, "JOKER Bar", "Busan");
         } catch (Exception e) {
             e.printStackTrace();
         }
