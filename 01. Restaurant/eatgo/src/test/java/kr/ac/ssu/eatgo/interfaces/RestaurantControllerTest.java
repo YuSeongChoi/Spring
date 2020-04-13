@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.core.StringContains.containsString;
@@ -18,6 +19,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -41,6 +43,7 @@ class RestaurantControllerTest {
                     .name("JOKER House")
                     .address("Seoul")
                     .build();
+
             given(restaurantService.getRestaurants()).willReturn(restaurants);
 
             mvc.perform(get("http://localhost:8080/restaurants"))
@@ -66,7 +69,11 @@ class RestaurantControllerTest {
                     .name("JOKER House")
                     .address("Seoul")
                     .build();
-            restaurant1.addMenuItem(new MenuItem("Kimchi"));
+
+            MenuItem menuItem = MenuItem.builder()
+                    .name("Kimchi")
+                    .build();
+            restaurant1.setMenuItems(Arrays.asList(menuItem));
 
 //            Restaurant restaurant2 = new Restaurant(2020L, "Cyber Food", "Seoul");
             Restaurant restaurant2 = Restaurant.builder()
@@ -107,12 +114,22 @@ class RestaurantControllerTest {
     @Test
     public void create() {
         try {
-            mvc.perform(post("restaurants/")
+            given(restaurantService.addRestaurant(any())).will(invocation -> {
+            Restaurant restaurant = invocation.getArgument(0);
+            return Restaurant.builder()
+                    .id(1234L)
+                    .name(restaurant.getName())
+                    .address(restaurant.getAddress())
+                    .build();
+            });
+
+            mvc.perform(post("/restaurants")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content("{\"name\":\"Beryong\",\"address\":\"Busan\"}"))
+                    .content("{\"name\":\"Beryong\", \"address\": \"Busan\"}"))
                     .andExpect(status().isCreated())
-                    .andExpect(header().string("location","1234"))
-                    .andExpect(content().string("{}"));
+                    .andExpect(header().string("location", "/restaurants/1234"))
+                    .andExpect(content().string("{}"))
+                    .andDo(print());
 
             verify(restaurantService).addRestaurant(any());
 
