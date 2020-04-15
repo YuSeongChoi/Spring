@@ -1,12 +1,12 @@
 package kr.ac.ssu.eatgo.interfaces;
 
 import kr.ac.ssu.eatgo.application.RestaurantService;
-import kr.ac.ssu.eatgo.domain.*;
+import kr.ac.ssu.eatgo.domain.MenuItem;
+import kr.ac.ssu.eatgo.domain.Restaurant;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -33,16 +33,54 @@ class RestaurantControllerTest {
     private RestaurantService restaurantService;
 
     @Test
+    public void createWithValidData() {
+        try {
+            given(restaurantService.addRestaurant(any())).will(invocation -> {
+                Restaurant restaurant = invocation.getArgument(0);
+                return Restaurant.builder()
+                        .id(1234L)
+                        .name(restaurant.getName())
+                        .address(restaurant.getAddress())
+                        .build();
+            });
+
+            mvc.perform(post("/restaurants")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{\"name\":\"Beryong\", \"address\": \"Busan\"}"))
+                    .andExpect(status().isCreated())
+                    .andExpect(header().string("location", "/restaurants/1234"))
+                    .andExpect(content().string("{}"))
+                    .andDo(print());
+
+            verify(restaurantService).addRestaurant(any());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void createWithInValidData() {
+        try {
+            mvc.perform(post("/restaurants")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{\"name\":\"\", \"address\": \"\"}"))
+                    .andExpect(status().isBadRequest());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
     public void list() {
         try {
             //즉, 실제의 값을 관리하는것이 아니라 restaurantService를 사용하는지에 대한 TEST만 한다.
             List<Restaurant> restaurants = new ArrayList<>();
-//            restaurants.add(new Restaurant(1004L, "JOKER House", "Seoul"));
-            Restaurant restaurant = Restaurant.builder()
-                    .id(1004L)
-                    .name("JOKER House")
-                    .address("Seoul")
-                    .build();
+//            restaurants.add(Restaurant.builder())
+//                    .id(1004L)
+//                    .name("JOKER House")
+//                    .address("Seoul")
+//                    .build());
 
             given(restaurantService.getRestaurants()).willReturn(restaurants);
 
@@ -112,34 +150,7 @@ class RestaurantControllerTest {
     }
 
     @Test
-    public void create() {
-        try {
-            given(restaurantService.addRestaurant(any())).will(invocation -> {
-            Restaurant restaurant = invocation.getArgument(0);
-            return Restaurant.builder()
-                    .id(1234L)
-                    .name(restaurant.getName())
-                    .address(restaurant.getAddress())
-                    .build();
-            });
-
-            mvc.perform(post("/restaurants")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content("{\"name\":\"Beryong\", \"address\": \"Busan\"}"))
-                    .andExpect(status().isCreated())
-                    .andExpect(header().string("location", "/restaurants/1234"))
-                    .andExpect(content().string("{}"))
-                    .andDo(print());
-
-            verify(restaurantService).addRestaurant(any());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void update() {
+    public void updateWithValidData() {
         try {
             mvc.perform(patch("/restaurants/1004")
             .contentType(MediaType.APPLICATION_JSON)
@@ -147,6 +158,30 @@ class RestaurantControllerTest {
                     .andExpect(status().isOk());
 
             verify(restaurantService).updateRestaurant(1004L, "JOKER Bar", "Busan");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void updateWithInValidData() {
+        try {
+            mvc.perform(patch("/restaurants/1004")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{\"name\":\"\",\"address\":\"\"}"))
+                    .andExpect(status().isBadRequest());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void updateWithoutName() {
+        try {
+            mvc.perform(patch("/restaurants/1004")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{\"name\":\"\",\"address\":\"Busan\"}"))
+                    .andExpect(status().isBadRequest());
         } catch (Exception e) {
             e.printStackTrace();
         }
