@@ -3,6 +3,7 @@ package kr.ac.ssu.eatgo.interfaces;
 import kr.ac.ssu.eatgo.application.RestaurantService;
 import kr.ac.ssu.eatgo.domain.MenuItem;
 import kr.ac.ssu.eatgo.domain.Restaurant;
+import kr.ac.ssu.eatgo.domain.RestaurantNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -99,7 +100,7 @@ class RestaurantControllerTest {
     }
 
     @Test
-    public void detail() {
+    public void detailWithExisted() {
         try {
 //            Restaurant restaurant1 = new Restaurant(1004L, "JOKER House", "Seoul");
             Restaurant restaurant1 = Restaurant.builder()
@@ -147,6 +148,15 @@ class RestaurantControllerTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void detailWithNoteExisted() throws Exception {
+        given(restaurantService.getRestaurant(404L))
+                .willThrow(new RestaurantNotFoundException(404L));
+        mvc.perform(get("/restaurants/404"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("{}"));
     }
 
     @Test
