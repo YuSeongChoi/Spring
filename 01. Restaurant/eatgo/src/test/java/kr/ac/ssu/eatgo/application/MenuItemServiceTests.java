@@ -3,6 +3,7 @@ package kr.ac.ssu.eatgo.application;
 import kr.ac.ssu.eatgo.domain.MenuItem;
 import kr.ac.ssu.eatgo.domain.MenuItemRepository;
 import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -16,12 +17,13 @@ import static org.mockito.Mockito.verify;
 
 public class MenuItemServiceTests {
 
+    @Mock
     private MenuItemService menuItemService;
 
     @Mock
     private MenuItemRepository menuItemRepository;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 

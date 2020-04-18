@@ -77,18 +77,13 @@ class RestaurantControllerTest {
         try {
             //즉, 실제의 값을 관리하는것이 아니라 restaurantService를 사용하는지에 대한 TEST만 한다.
             List<Restaurant> restaurants = new ArrayList<>();
-//            restaurants.add(Restaurant.builder())
-//                    .id(1004L)
-//                    .name("JOKER House")
-//                    .address("Seoul")
-//                    .build());
 
             given(restaurantService.getRestaurants()).willReturn(restaurants);
 
             mvc.perform(get("http://localhost:8080/restaurants"))
                     .andExpect(status().isOk())
                     .andExpect(content().string(
-                            containsString("\"id\":1004")
+                            containsString("\"id\":1004L")
                     ))
                     .andExpect(content().string(
                             containsString("\"name\":\"JOKER House\"")
