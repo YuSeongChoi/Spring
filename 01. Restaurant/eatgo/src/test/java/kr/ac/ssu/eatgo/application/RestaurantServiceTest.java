@@ -81,11 +81,6 @@ class RestaurantServiceTest {
         assertThat(menuItem.getName(), is("Kimchi"));
     }
 
-//    @Test
-//    public void getRestaurantWithNotExisted() {
-//        restaurantService.getRestaurant(404L);
-//    }
-
     @Test
     public void addRestaurant() {
         given(restaurantRepository.save(any())).will(invocation -> {
