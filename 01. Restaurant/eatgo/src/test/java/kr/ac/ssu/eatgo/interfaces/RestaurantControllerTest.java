@@ -5,10 +5,12 @@ import kr.ac.ssu.eatgo.domain.MenuItem;
 import kr.ac.ssu.eatgo.domain.Restaurant;
 import kr.ac.ssu.eatgo.domain.RestaurantNotFoundException;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
@@ -23,7 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
+@RunWith(SpringRunner.class)
 @WebMvcTest(RestaurantController.class)
 class RestaurantControllerTest {
 
@@ -39,7 +41,7 @@ class RestaurantControllerTest {
             given(restaurantService.addRestaurant(any())).will(invocation -> {
                 Restaurant restaurant = invocation.getArgument(0);
                 return Restaurant.builder()
-                        .id(1234L)
+                        .id(1004L)
                         .name(restaurant.getName())
                         .address(restaurant.getAddress())
                         .build();
@@ -49,7 +51,7 @@ class RestaurantControllerTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content("{\"name\":\"Beryong\", \"address\": \"Busan\"}"))
                     .andExpect(status().isCreated())
-                    .andExpect(header().string("location", "/restaurants/1234"))
+                    .andExpect(header().string("location", "/restaurants/1004"))
                     .andExpect(content().string("{}"))
                     .andDo(print());
 
@@ -80,10 +82,10 @@ class RestaurantControllerTest {
 
             given(restaurantService.getRestaurants()).willReturn(restaurants);
 
-            mvc.perform(get("http://localhost:8080/restaurants"))
+            mvc.perform(get("http://localhost:8080/restaurants/"))
                     .andExpect(status().isOk())
                     .andExpect(content().string(
-                            containsString("\"id\":1004L")
+                            containsString("\"id\":1004")
                     ))
                     .andExpect(content().string(
                             containsString("\"name\":\"JOKER House\"")

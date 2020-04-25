@@ -21,7 +21,7 @@ public class RestaurantController {
     @Autowired
     private RestaurantService restaurantService;
 
-    @GetMapping("/restaurants")
+    @GetMapping("/restaurants/")
     public List<Restaurant> list() {
         List<Restaurant> restaurants = restaurantService.getRestaurants();
         return restaurants;
@@ -46,7 +46,7 @@ public class RestaurantController {
                 Restaurant.builder()
                     .name(resource.getName())
                     .address(resource.getAddress())
-                  .build());
+                    .build());
 
         URI location = null;
         try {
