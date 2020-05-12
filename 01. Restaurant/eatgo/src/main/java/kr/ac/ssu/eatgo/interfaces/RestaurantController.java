@@ -46,7 +46,7 @@ public class RestaurantController {
                 Restaurant.builder()
                     .name(resource.getName())
                     .address(resource.getAddress())
-                    .build());
+                  .build());
 
         URI location = null;
         try {

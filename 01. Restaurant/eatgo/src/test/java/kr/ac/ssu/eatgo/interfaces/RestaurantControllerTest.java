@@ -4,6 +4,7 @@ import kr.ac.ssu.eatgo.application.RestaurantService;
 import kr.ac.ssu.eatgo.domain.MenuItem;
 import kr.ac.ssu.eatgo.domain.Restaurant;
 import kr.ac.ssu.eatgo.domain.RestaurantNotFoundException;
+import kr.ac.ssu.eatgo.domain.Review;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,26 +101,23 @@ class RestaurantControllerTest {
     public void detailWithExisted() {
         try {
 //            Restaurant restaurant1 = new Restaurant(1004L, "JOKER House", "Seoul");
-            Restaurant restaurant1 = Restaurant.builder()
+            Restaurant restaurant = Restaurant.builder()
                     .id(1004L)
                     .name("JOKER House")
                     .address("Seoul")
                     .build();
-
             MenuItem menuItem = MenuItem.builder()
                     .name("Kimchi")
                     .build();
-            restaurant1.setMenuItems(Arrays.asList(menuItem));
-
-//            Restaurant restaurant2 = new Restaurant(2020L, "Cyber Food", "Seoul");
-            Restaurant restaurant2 = Restaurant.builder()
-                    .id(2020L)
-                    .name("Cyber Food")
-                    .address("Seoul")
+            restaurant.setMenuItems(Arrays.asList(menuItem));
+            Review review = Review.builder()
+                    .name("JOKER")
+                    .score(5)
+                    .description("Great!")
                     .build();
+            restaurant.setReviews(Arrays.asList(review));
 
-            given(restaurantService.getRestaurant(1004L)).willReturn(restaurant1);
-            given(restaurantService.getRestaurant(2020L)).willReturn(restaurant2);
+            given(restaurantService.getRestaurant(1004L)).willReturn(restaurant);
 
 
             mvc.perform(get("http://localhost:8080/restaurants/1004"))
@@ -132,15 +130,9 @@ class RestaurantControllerTest {
                     ))
                     .andExpect(content().string(
                             containsString("Kimchi")
-                    ));
-
-            mvc.perform(get("http://localhost:8080/restaurants/2020"))
-                    .andExpect(status().isOk())
-                    .andExpect(content().string(
-                            containsString("\"id\":2020")
                     ))
                     .andExpect(content().string(
-                            containsString("\"name\":\"Cyber Food\"")
+                            containsString("Great!")
                     ));
         } catch (Exception e) {
             e.printStackTrace();
